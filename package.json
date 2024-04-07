@@ -1,14 +1,15 @@
 {
-  "name": "my-store-app",
+  "name": "makas-azure-course",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "vite",
-    "build": "tsc && vite build",
-    "preview": "npm run build && vite preview",
+    "start": "vite --config apps/shop/vite.config.ts",
+    "build": "nx build shop",
+    "deploy": "nx deploy shop",
+    "preview": "npm run build && nx preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "nx test --coverage",
     "lint": "eslint --ignore-path .gitignore --fix src",
     "prettier": "prettier src --write",
     "client:deploy": "sls client deploy --no-config-change --no-policy-change --no-cors-change",
@@ -40,6 +41,9 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@nx/eslint": "18.2.3",
+    "@nx/vite": "18.2.3",
+    "@nx/web": "18.2.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.1",
@@ -56,6 +60,7 @@
     "eslint-plugin-react": "^7.30.1",
     "jsdom": "^20.0.0",
     "msw": "^0.43.1",
+    "nx": "18.2.3",
     "prettier": "2.7.1",
     "serverless": "^3.20.0",
     "serverless-finch": "^4.0.0",
@@ -69,5 +74,8 @@
   },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }
