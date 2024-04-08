@@ -27,3 +27,4 @@ dist-ssr
 
 
 .nx/cache
+terraform/.terraform

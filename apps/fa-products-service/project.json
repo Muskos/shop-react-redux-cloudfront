@@ -1,0 +1,20 @@
+{
+  "name": "functions",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/functions/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "command": "tsc -p ./apps/fa-products-service/tsconfig.json"
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "command": "cd ./apps/fa-products-service && func start"
+    },
+    "deploy": {
+      "dependsOn": ["build"],
+      "command": "cd ./apps/fa-products-service && func azure functionapp publish amakas-products-service-ne-001"
+    }
+  },
+  "tags": []
+}
