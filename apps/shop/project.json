@@ -6,7 +6,7 @@
   "targets": {
     "deploy": {
       "dependsOn": ["build"],
-      "command": "az storage blob upload-batch -s './dist' -d '$web' --account-name 'amakas001' --overwrite"
+      "command": "az storage blob upload-batch -s './dist' -d '$web' --account-name 'amakas002' --overwrite"
     }
   },
   "tags": []

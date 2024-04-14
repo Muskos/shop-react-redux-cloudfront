@@ -182,6 +182,17 @@ resource "azurerm_api_management_api_policy" "api_policy" {
     <inbound>
         <set-backend-service backend-id="${azurerm_api_management_backend.products_fa.name}"/>
         <base/>
+        <cors>
+            <allowed-origins>
+                <origin>*</origin>
+            </allowed-origins>
+            <allowed-methods>
+                <method>*</method>
+            </allowed-methods>
+            <allowed-headers>
+                <header>*</header>
+            </allowed-headers>
+        </cors>
     </inbound>
     <backend>
         <base/>

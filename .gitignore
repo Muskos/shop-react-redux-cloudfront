@@ -27,4 +27,6 @@ dist-ssr
 
 
 .nx/cache
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
 terraform/.terraform
