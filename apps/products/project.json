@@ -1,0 +1,12 @@
+{
+  "name": "products",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "/",
+  "projectType": "application",
+  "targets": {
+    "start": {
+      "command": "cd apps/products && ts-node index.ts"
+    }
+  },
+  "tags": []
+}

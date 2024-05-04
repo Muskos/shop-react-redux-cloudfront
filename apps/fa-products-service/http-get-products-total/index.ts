@@ -1,15 +1,14 @@
 import { AzureFunction, Context } from "@azure/functions";
-import { getProducts } from "../services/products";
+import { getProductTotal } from "../services/products";
 
 const httpTrigger: AzureFunction = async function (
   context: Context
 ): Promise<void> {
-  context.log("HTTP get product processed a request.");
-
-  const products = await getProducts();
+  context.log("HTTP get total products processed a request.");
+  const total = await getProductTotal();
 
   context.res = {
-    body: products,
+    body: total,
   };
 };
 

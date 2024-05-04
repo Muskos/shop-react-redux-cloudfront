@@ -20,7 +20,7 @@ resource "azurerm_resource_group" "front_end_rg" {
 }
 
 resource "azurerm_storage_account" "front_end_storage_account" {
-  name                     = "amakas002"
+  name                     = "amakas003"
   location                 = "northeurope"
 
   account_replication_type = "LRS"
@@ -39,7 +39,7 @@ resource "azurerm_resource_group" "product_service_rg" {
 }
 
 resource "azurerm_storage_account" "products_service_fa" {
-  name     = "amakasproducts002"
+  name     = "amakasproducts003"
   location = "northeurope"
 
   account_replication_type = "LRS"
@@ -77,7 +77,7 @@ resource "azurerm_application_insights" "products_service_fa" {
 
 
 resource "azurerm_windows_function_app" "products_service" {
-  name     = "amakas-products-service-ne-001"
+  name     = "amakas-products-service-ne-003"
   location = "northeurope"
 
   service_plan_id     = azurerm_service_plan.product_service_plan.id
@@ -129,7 +129,7 @@ resource "azurerm_windows_function_app" "products_service" {
 // API MANAGEMENT
 resource "azurerm_api_management" "core_apim" {
   location        = "northeurope"
-  name            = "amakas-apim-sand-ne-001"
+  name            = "amakas-apim-sand-ne-003"
   publisher_email = "aliaksei_makas@epam.com"
   publisher_name  = "Aliaksei Makas"
 
@@ -192,6 +192,9 @@ resource "azurerm_api_management_api_policy" "api_policy" {
             <allowed-headers>
                 <header>*</header>
             </allowed-headers>
+            <expose-headers>
+                <header>*</header>
+            </expose-headers>
         </cors>
     </inbound>
     <backend>
@@ -230,6 +233,88 @@ resource "azurerm_api_management_api_operation" "get_product_by_id" {
     name     = "productId"
     type     = "number"
     required = true
+  }
+}
+
+resource "azurerm_api_management_api_operation" "get_products_total" {
+  api_management_name = azurerm_api_management.core_apim.name
+  api_name            = azurerm_api_management_api.products_api.name
+  display_name        = "Get Products Total"
+  method              = "Get"
+  operation_id        = "get-products-total"
+  resource_group_name = "rg-product-service-sand-ne-001"
+  url_template        = "/products/total"
+}
+
+resource "azurerm_api_management_api_operation" "post_products" {
+  api_management_name = azurerm_api_management.core_apim.name
+  api_name            = azurerm_api_management_api.products_api.name
+  display_name        = "Post Products"
+  method              = "Post"
+  operation_id        = "post-products"
+  resource_group_name = "rg-product-service-sand-ne-001"
+  url_template        = "/products"
+}
+
+// DB
+resource "azurerm_cosmosdb_account" "product_test_app" {
+  location            = "northeurope"
+  name                = "cos-app-sand-ne-001"
+  offer_type          = "Standard"
+  resource_group_name = azurerm_resource_group.product_service_rg.name
+  kind                = "GlobalDocumentDB"
+
+  consistency_policy {
+    consistency_level = "Eventual"
+  }
+
+  capabilities {
+    name = "EnableServerless"
+  }
+
+  geo_location {
+    failover_priority = 0
+    location          = "North Europe"
+  }
+}
+
+resource "azurerm_cosmosdb_sql_database" "products_app" {
+  account_name        = azurerm_cosmosdb_account.product_test_app.name
+  name                = "products-db"
+  resource_group_name = azurerm_resource_group.product_service_rg.name
+}
+
+resource "azurerm_cosmosdb_sql_container" "products" {
+  account_name        = azurerm_cosmosdb_account.product_test_app.name
+  database_name       = azurerm_cosmosdb_sql_database.products_app.name
+  name                = "products"
+  partition_key_path  = "/id"
+  resource_group_name = azurerm_resource_group.product_service_rg.name
+
+  # Cosmos DB supports TTL for the records
+  default_ttl = -1
+
+  indexing_policy {
+    excluded_path {
+      path = "/*"
+    }
+  }
+}
+
+resource "azurerm_cosmosdb_sql_container" "stocks" {
+  account_name        = azurerm_cosmosdb_account.product_test_app.name
+  database_name       = azurerm_cosmosdb_sql_database.products_app.name
+  name                = "stocks"
+  partition_key_path  = "/product_id"
+  resource_group_name = azurerm_resource_group.product_service_rg.name
+
+  # Cosmos DB supports TTL for the records
+  default_ttl = -1
+
+  indexing_policy {
+    excluded_path {
+      path = "/*"
+    }
   }
 }
 
