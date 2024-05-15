@@ -13,7 +13,7 @@
     },
     "deploy": {
       "dependsOn": ["build"],
-      "command": "cd ./apps/fa-products-service && func azure functionapp publish amakas-products-service-ne-001"
+      "command": "cd ./apps/fa-products-service && func azure functionapp publish amakas-products-service-ne-003"
     }
   },
   "tags": []

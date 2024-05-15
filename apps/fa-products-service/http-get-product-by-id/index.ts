@@ -1,28 +1,21 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+import { getProduct } from "../services/products";
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
-  // TODO see u next time
+  context.log("HTTP get product by id processed a request.");
+
   if (req.params && req.params.productId) {
-    context.log(req.params.productId);
+    const product = await getProduct(req.params.productId);
+
     context.res = {
-      body: {
-        id: req.params.productId,
-        title: "PGP1",
-        description: "Desc1",
-        price: 100,
-      },
+      body: product,
     };
   } else {
     context.res = {
-      body: {
-        id: req.params.productId,
-        title: "PGP1",
-        description: "Desc1",
-        price: 100,
-      },
+      status: 404,
     };
   }
 };
