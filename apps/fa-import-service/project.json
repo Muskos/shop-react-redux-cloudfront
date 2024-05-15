@@ -1,0 +1,22 @@
+{
+  "name": "import",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/fa-import-service",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "command": "tsc -p ./apps/fa-import-service/tsconfig.json"
+    },
+    "watch-build": {
+      "command": "tsc -w -p ./apps/fa-import-service/tsconfig.json"
+    },
+    "start": {
+      "command": "cd ./apps/fa-import-service && func start"
+    },
+    "deploy": {
+      "dependsOn": ["build"],
+      "command": "cd ./apps/fa-import-service && func azure functionapp publish amakas-import-service-ne-003"
+    }
+  },
+  "tags": []
+}

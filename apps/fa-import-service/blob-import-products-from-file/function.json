@@ -1,0 +1,13 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "blobTrigger",
+      "direction": "in",
+      "name": "blob",
+      "path": "my-container",
+      "connection": "CONNECTION_STRING_STORAGE_ACCOUNT"
+    }
+  ],
+  "scriptFile": "../dist/blob-import-products-from-file/index.js"
+}
