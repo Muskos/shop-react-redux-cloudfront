@@ -1,5 +1,5 @@
 {
-  "name": "functions",
+  "name": "products",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/functions/src",
   "projectType": "application",
@@ -7,8 +7,10 @@
     "build": {
       "command": "tsc -p ./apps/fa-products-service/tsconfig.json"
     },
+    "watch-build": {
+      "command": "tsc -w -p ./apps/fa-products-service/tsconfig.json"
+    },
     "start": {
-      "dependsOn": ["build"],
       "command": "cd ./apps/fa-products-service && func start"
     },
     "deploy": {
