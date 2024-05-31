@@ -433,3 +433,37 @@ resource "azurerm_windows_function_app" "import_service" {
     ]
   }
 }
+
+# Service bus
+resource "azurerm_servicebus_namespace" "sb" {
+  name                          = "my-new-servicebus"
+  location                      = azurerm_resource_group.rg.location
+  resource_group_name           = azurerm_resource_group.rg.name
+  sku                           = "Standard"
+  public_network_access_enabled = true /* can be changed to false for premium */
+}
+
+resource "azurerm_servicebus_queue" "example" {
+  name                                    = "my_new_servicebus_queue"
+  namespace_id                            = azurerm_servicebus_namespace.sb.id
+}
+
+resource "azurerm_servicebus_topic" "products_import_topic" {
+  name         = "products-import-topic"
+  namespace_id = azurerm_servicebus_namespace.sb.id
+}
+
+resource "azurerm_servicebus_subscription" "products_import_subscription" {
+  name               = "products-import-subscription-001"
+  topic_id           = azurerm_servicebus_topic.products_import_topic.id
+  max_delivery_count = 1
+}
+
+resource "azurerm_servicebus_subscription_rule" "products_import_subscription_rule" {
+  name            = "products-import-subscription-rule-001"
+  subscription_id = azurerm_servicebus_subscription.products_import_subscription.id
+  filter_type     = "CorrelationFilter"
+  correlation_filter {
+    label          = "product"
+  }
+}

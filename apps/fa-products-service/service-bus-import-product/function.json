@@ -1,0 +1,15 @@
+{
+  "bindings": [
+    {
+      "subscriptionName": "products-import-subscription-001",
+      "topicName": "products-import-topic",
+      "connection": "SERVICE_BUS_CONNECTION_STRING",
+      "name": "message",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "accessRights": "listen"
+    }
+  ],
+  "disabled": false,
+  "scriptFile": "../dist/service-bus-import-product/index.js"
+}
