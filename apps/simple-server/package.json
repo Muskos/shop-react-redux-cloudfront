@@ -1,0 +1,14 @@
+{
+  "name": "simple-server",
+  "version": "0.0.1",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "ts-node": "10.9.2"
+  },
+  "devDependencies": {},
+  "main": "./index.ts",
+  "scripts": {
+    "start": "ts-node index.ts"
+  }
+}
