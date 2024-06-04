@@ -467,3 +467,120 @@ resource "azurerm_servicebus_subscription_rule" "products_import_subscription_ru
     label          = "product"
   }
 }
+
+// Container
+resource "azurerm_resource_group" "simple-server-rg" {
+  name     = "makas-rg-simple-server-001"
+  location = "northeurope"
+}
+
+resource "azurerm_log_analytics_workspace" "simple_server_log_analytics_workspace" {
+  name                = "makas-log-analytics-chatbot-001"
+  location            = azurerm_resource_group.simple-server-rg.location
+  resource_group_name = azurerm_resource_group.simple-server-rg.name
+}
+
+resource "azurerm_container_registry" "simple-server" {
+  name                = "makassimpleserver"
+  resource_group_name = azurerm_resource_group.simple-server-rg.name
+  location            = azurerm_resource_group.simple-server-rg.location
+  sku                 = "Basic"
+  admin_enabled       = true
+}
+
+resource "azurerm_container_app_environment" "simple_server_cae" {
+  name                       = "makas-cae-simple-server-001"
+  location                   = azurerm_resource_group.simple-server-rg.location
+  resource_group_name        = azurerm_resource_group.simple-server-rg.name
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.simple_server_log_analytics_workspace.id
+}
+
+resource "azurerm_container_app" "simple_server_ca_docker_acr" {
+  name                         = "makas-chatbot-ca-acr"
+  container_app_environment_id = azurerm_container_app_environment.simple_server_cae.id
+  resource_group_name          = azurerm_resource_group.simple-server-rg.name
+  revision_mode                = "Single"
+
+  registry {
+    server               = azurerm_container_registry.simple-server.login_server
+    username             = azurerm_container_registry.simple-server.admin_username
+    password_secret_name = "acr-password"
+  }
+
+  ingress {
+    allow_insecure_connections = false
+    external_enabled           = true
+    target_port                = 3000
+
+    traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
+
+  }
+
+  template {
+    container {
+      name   = "makas-simple-sever-container-acr"
+      image  = "${azurerm_container_registry.simple-server.login_server}/simple-server:v1"
+      cpu    = 0.25
+      memory = "0.5Gi"
+
+      env {
+        name  = "CONTAINER_REGISTRY_NAME"
+        value = "Azure Container Registry"
+      }
+    }
+  }
+
+  secret {
+    name  = "acr-password"
+    value = azurerm_container_registry.simple-server.admin_password
+  }
+}
+
+// DOCKER
+resource "azurerm_container_app" "simple_server_ca_docker_hub" {
+  name                         = "makas-simple-server-ca-dh"
+  container_app_environment_id = azurerm_container_app_environment.simple_server_cae.id
+  resource_group_name          = azurerm_resource_group.simple-server-rg.name
+  revision_mode                = "Single"
+
+  registry {
+    server               = "docker.io"
+    username             = "muskos"
+    password_secret_name = "docker-io-pass"
+  }
+
+  ingress {
+    allow_insecure_connections = false
+    external_enabled           = true
+    target_port                = 3000
+
+    traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
+
+  }
+
+  template {
+    container {
+      name   = "makas-simple-server-container-dh"
+      image  = "muskos/simple-server:latest"
+      cpu    = 0.25
+      memory = "0.5Gi"
+
+      env {
+        name  = "CONTAINER_REGISTRY_NAME"
+        value = "Docker Hub"
+      }
+    }
+  }
+
+  secret {
+    name  = "docker-io-pass"
+    value = "ucf9pmu@zwg_ABU0wqa"
+  }
+}
+

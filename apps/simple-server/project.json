@@ -1,0 +1,12 @@
+{
+  "name": "simple-sever",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "/",
+  "projectType": "application",
+  "targets": {
+    "start": {
+      "command": "cd apps/simple-server && ts-node index.ts"
+    }
+  },
+  "tags": []
+}
